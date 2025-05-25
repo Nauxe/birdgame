@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/Users/lexuanyu/Projects/Learning/sdltests",
+  "command": "/usr/bin/c++  -I/opt/homebrew/Cellar/sdl3/3.2.12/include -I/opt/homebrew/include  -arch arm64 -o CMakeFiles/hello.dir/src/main.cpp.o -c /Users/lexuanyu/Projects/Learning/sdltests/src/main.cpp",
+  "file": "/Users/lexuanyu/Projects/Learning/sdltests/src/main.cpp",
+  "output": "CMakeFiles/hello.dir/src/main.cpp.o"
+}
+]
