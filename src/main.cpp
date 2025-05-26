@@ -1,3 +1,4 @@
+#include "SDL3/SDL_log.h"
 #include <memory>
 #include <string>
 #define SDL_MAIN_USE_CALLBACKS 1 /* use the callbacks instead of main() */
@@ -12,6 +13,10 @@
 #define WINDOW_START_HEIGHT 120.0f
 static std::string ASSETS_PATH = "./assets/";
 
+#define BOOP_SIZE_MULT 0.1
+#define BOOP_FRAMES 2
+#define MAX_BOOP_FRAMES 10
+
 /////////////////////////////////////////////////////////////////////////////
 /// Structs
 /////////////////////////////////////////////////////////////////////////////
@@ -25,6 +30,7 @@ struct BirdContext {
   float height;
   float x_loc;
   float y_loc;
+  int boopFrames;
   SDL_Texture *curTexture;
 };
 
@@ -140,8 +146,18 @@ void MoveWindowCenterToMouse(AppContext *app) {
 /////////////////////////////////////////////////////////////////////////////
 
 SDL_AppResult RenderBird(AppContext *app) {
-  DisplayTextureAt(app, app->bird->curTexture, app->bird->x_loc,
-                   app->bird->y_loc, app->bird->width, app->bird->height);
+  float bird_center_x = app->bird->x_loc;
+  float bird_center_y = app->bird->y_loc;
+  float bird_width = app->bird->width;
+  float bird_height = app->bird->height;
+
+  if (app->bird->boopFrames > 0) {
+    bird_width += bird_width * app->bird->boopFrames * BOOP_SIZE_MULT;
+    bird_height += bird_height * app->bird->boopFrames * BOOP_SIZE_MULT;
+  }
+
+  DisplayTextureAt(app, app->bird->curTexture, bird_center_x, bird_center_y,
+                   bird_width, bird_height);
   return SDL_APP_CONTINUE;
 }
 
@@ -205,6 +221,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
           .height = -1, // To be set later in init
           .x_loc = (float)bbwidth / 2.0f,
           .y_loc = (float)bbheight / 2.0f,
+          .boopFrames = 0,
           .curTexture = nullptr, // To be set later in init
 
       }),
@@ -266,6 +283,11 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 
       app->mouseContext->win_x -= (float)global_win_x;
       app->mouseContext->win_y -= (float)global_win_y;
+
+      app->bird->boopFrames += BOOP_FRAMES;
+      if (app->bird->boopFrames < MAX_BOOP_FRAMES) {
+        app->bird->boopFrames = MAX_BOOP_FRAMES;
+      }
     }
   }
 
@@ -302,6 +324,16 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     app->frameNumber++;
   }
 
+  // Move window if mouse is down
+  if (app->mouseContext->isHeld) {
+    MoveWindowCenterToMouse(app);
+  }
+
+  // Tick boop frames
+  if (app->bird->boopFrames > 0) {
+    app->bird->boopFrames--;
+  }
+
   // Log framerate
   if (app->frameNumber % 10 == 0) {
     Uint64 curTicks = SDL_GetTicks();
@@ -316,11 +348,6 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
   // Cap framerate
   if (elapsedMS <= 1000.0f / FPS_LIMIT - 0.001f) {
     SDL_Delay(floor(1000.0f / FPS_LIMIT - 0.001f - elapsedMS));
-  }
-
-  // Move window if mouse is down
-  if (app->mouseContext->isHeld) {
-    MoveWindowCenterToMouse(app);
   }
 
   return SDL_APP_CONTINUE;
