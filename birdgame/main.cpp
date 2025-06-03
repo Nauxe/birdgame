@@ -1,6 +1,5 @@
-#include "SDL3/SDL_log.h"
-#include <memory>
-#include <string>
+#include "textures.h"
+#include "utils.h"
 #define SDL_MAIN_USE_CALLBACKS 1 /* use the callbacks instead of main() */
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
@@ -11,154 +10,19 @@
 
 #define WINDOW_START_WIDTH 120.0f
 #define WINDOW_START_HEIGHT 120.0f
-static std::string ASSETS_PATH = "./assets/";
 
-#define BOOP_SIZE_MULT 0.1
 #define BOOP_FRAMES 2
 #define MAX_BOOP_FRAMES 10
 
 /////////////////////////////////////////////////////////////////////////////
-/// Structs
-/////////////////////////////////////////////////////////////////////////////
-
-struct TextureSet {
-  SDL_Texture *birdTex1, *birdTex2, *cloudTex;
-};
-
-struct BirdContext {
-  float width;
-  float height;
-  float x_loc;
-  float y_loc;
-  int boopFrames;
-  SDL_Texture *curTexture;
-};
-
-struct MouseContext {
-  bool isHeld;
-  float win_x;
-  float win_y;
-};
-
-struct AppContext {
-  int frameNumber;
-  SDL_Window *window;
-  SDL_Renderer *renderer;
-  std::unique_ptr<TextureSet> textureSet;
-  SDL_AudioDeviceID audioDevice;
-  SDL_AppResult app_quit = SDL_APP_CONTINUE;
-  std::unique_ptr<BirdContext> bird;
-  Uint64 fps;
-  Uint64 prevTickCount;
-  std::unique_ptr<MouseContext> mouseContext;
-};
-
-/////////////////////////////////////////////////////////////////////////////
 /// Helper Functions
 /////////////////////////////////////////////////////////////////////////////
-
-SDL_AppResult SDL_Fail() {
-  SDL_LogError(SDL_LOG_CATEGORY_CUSTOM, "Error %s", SDL_GetError());
-  return SDL_APP_FAILURE;
-}
-
-SDL_AppResult LoadTextureFromPath(AppContext **appPtr, SDL_Texture **texture,
-                                  const char *path) {
-  AppContext *app = *appPtr;
-
-  SDL_Surface *surface = IMG_Load(path);
-  if (not surface) {
-    return SDL_Fail();
-  }
-
-  *texture = SDL_CreateTextureFromSurface(app->renderer, surface);
-  if (not texture) {
-    return SDL_Fail();
-  }
-
-  SDL_DestroySurface(surface);
-  return SDL_APP_CONTINUE;
-}
-
-// x and y are pixel locations the center of the texture should be at
-// (with origin at upper left)
-SDL_AppResult DisplayTextureAt(AppContext *app, SDL_Texture *texture, float x,
-                               float y, float texture_width,
-                               float texture_height, float rotation = 0.0f) {
-  SDL_FRect dst_rect;
-  dst_rect.x = x - texture_width / 2.0f;
-  dst_rect.y = y - texture_height / 2.0f;
-  dst_rect.w = (float)texture_width;
-  dst_rect.h = (float)texture_height;
-
-  SDL_FPoint center;
-  center.x = texture_width / 2.0f;
-  center.y = texture_height / 2.0f;
-
-  SDL_RenderTextureRotated(app->renderer, texture, NULL, &dst_rect, rotation,
-                           &center, SDL_FLIP_NONE);
-
-  return SDL_APP_CONTINUE;
-}
-
-// x and y are pixel locations the center of the texture should be at
-// (with origin at upper left)
-SDL_AppResult DisplayTextureAt(AppContext *app, SDL_Texture *texture, float x,
-                               float y, float rotation = 0.0f) {
-  float texture_width, texture_height;
-  SDL_GetTextureSize(texture, &texture_width, &texture_height);
-
-  return DisplayTextureAt(app, texture, x, y, texture_width, texture_height,
-                          rotation);
-}
-
-SDL_AppResult LoadTextures(AppContext **appPtr) {
-  AppContext *app = *appPtr;
-
-  SDL_Texture *birdTex1, *birdTex2, *pipeTex1, *pipeTex2, *cloudTex;
-  LoadTextureFromPath(appPtr, &birdTex1, (ASSETS_PATH + "bird1.png").c_str());
-  LoadTextureFromPath(appPtr, &birdTex2, (ASSETS_PATH + "bird2.png").c_str());
-  LoadTextureFromPath(appPtr, &cloudTex, (ASSETS_PATH + "cloud.png").c_str());
-
-  if (not birdTex1 || not birdTex2 || not pipeTex1 || not pipeTex2 ||
-      not cloudTex) {
-    return SDL_Fail();
-  }
-
-  app->textureSet = std::make_unique<TextureSet>(TextureSet{
-      .birdTex1 = birdTex1,
-      .birdTex2 = birdTex2,
-      .cloudTex = cloudTex,
-  });
-
-  return SDL_APP_CONTINUE;
-}
 
 void MoveWindowCenterToMouse(AppContext *app) {
   float x, y;
   SDL_GetGlobalMouseState(&x, &y);
   SDL_SetWindowPosition(app->window, x - app->mouseContext->win_x,
                         y - app->mouseContext->win_x);
-}
-
-/////////////////////////////////////////////////////////////////////////////
-/// Rendering Functions
-/////////////////////////////////////////////////////////////////////////////
-
-SDL_AppResult RenderBird(AppContext *app) {
-  float bird_center_x = app->bird->x_loc;
-  float bird_center_y = app->bird->y_loc;
-  float bird_width = app->bird->width;
-  float bird_height = app->bird->height;
-
-  if (app->bird->boopFrames > 0) {
-    bird_width += bird_width * app->bird->boopFrames * BOOP_SIZE_MULT;
-    bird_height += bird_height * app->bird->boopFrames * BOOP_SIZE_MULT;
-  }
-
-  DisplayTextureAt(app, app->bird->curTexture, bird_center_x, bird_center_y,
-                   bird_width, bird_height);
-  return SDL_APP_CONTINUE;
 }
 
 /////////////////////////////////////////////////////////////////////////////
