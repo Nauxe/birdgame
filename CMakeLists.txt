@@ -23,7 +23,7 @@ if (NOT(WIN32) AND (DEFINED SDL3_image))
   link_directories(${SDL3_image}/lib)
 endif()
 
-if (NOT(WIN32) AND (DEFINED SDL3_tt66)
+if (NOT(WIN32) AND (DEFINED SDL3_ttf))
   include_directories(${SDL3_ttf}/include)
   link_directories(${SDL3_ttf}/lib)
 endif()
