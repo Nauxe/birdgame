@@ -1,4 +1,3 @@
-#include "SDL3/SDL_init.h"
 #include "bird.h"
 #include "textures.h"
 #include "utils.h"
@@ -86,7 +85,9 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
   }
 
   // Set default bird texture
-  app->bird->SetCurTexture(app->textureSet->birdTex2);
+  app->bird->InitalizeBirdTextures(
+      app->textureSet->birdTex2,  // Idle texture
+      app->textureSet->birdTex1); // Foot up texture
 
   SDL_SetRenderVSync(renderer, -1);                          // enable vysnc
   SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND); // enable blending
