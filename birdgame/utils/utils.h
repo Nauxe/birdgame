@@ -1,5 +1,6 @@
 #pragma once
 
+#include "SDL3/SDL_init.h"
 #include <SDL3/SDL.h>
 #include <memory>
 
@@ -43,3 +44,5 @@ struct AppContext {
 /// Helper Functions
 /////////////////////////////////////////////////////////////////////////////
 SDL_AppResult SDL_Fail();
+
+void MoveAppWindowCenterToMouse(AppContext *app);

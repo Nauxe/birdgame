@@ -15,17 +15,6 @@
 #define MAX_BOOP_FRAMES 10
 
 /////////////////////////////////////////////////////////////////////////////
-/// Helper Functions
-/////////////////////////////////////////////////////////////////////////////
-
-void MoveWindowCenterToMouse(AppContext *app) {
-  float x, y;
-  SDL_GetGlobalMouseState(&x, &y);
-  SDL_SetWindowPosition(app->window, x - app->mouseContext->win_x,
-                        y - app->mouseContext->win_x);
-}
-
-/////////////////////////////////////////////////////////////////////////////
 /// Initialization & Shutdown
 /////////////////////////////////////////////////////////////////////////////
 
@@ -190,7 +179,7 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 
   // Move window if mouse is down
   if (app->mouseContext->isHeld) {
-    MoveWindowCenterToMouse(app);
+    MoveAppWindowCenterToMouse(app);
   }
 
   // Tick boop frames
