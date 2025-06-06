@@ -2,7 +2,7 @@
 
 #include "../utils/utils.h"
 #include <string>
-#define BOOP_SIZE_MULT 0.1
+#define BOOP_SIZE_MULT 0.05
 
 static std::string ASSETS_PATH = "./assets/";
 
