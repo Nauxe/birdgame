@@ -1,6 +1,10 @@
 #include "textures.h"
 #include <SDL3_image/SDL_image.h>
 
+/////////////////////////////////////////////////////////////////////////////
+/// Rendering Helper Functions
+/////////////////////////////////////////////////////////////////////////////
+
 SDL_AppResult LoadTextureFromPath(AppContext **appPtr, SDL_Texture **texture,
                                   const char *path) {
   AppContext *app = *appPtr;
@@ -83,12 +87,7 @@ SDL_AppResult RenderBird(AppContext *app) {
   float bird_width = app->bird->width;
   float bird_height = app->bird->height;
 
-  if (app->bird->boopFrames > 0) {
-    bird_width += bird_width * app->bird->boopFrames * BOOP_SIZE_MULT;
-    bird_height += bird_height * app->bird->boopFrames * BOOP_SIZE_MULT;
-  }
-
-  DisplayTextureAt(app, app->bird->curTexture, bird_center_x, bird_center_y,
-                   bird_width, bird_height);
+  DisplayTextureAt(app, app->bird->GetCurTexture(), bird_center_x,
+                   bird_center_y, bird_width, bird_height);
   return SDL_APP_CONTINUE;
 }

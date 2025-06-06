@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../bird/bird.h"
 #include "SDL3/SDL_init.h"
 #include <SDL3/SDL.h>
 #include <memory>
@@ -10,15 +11,6 @@
 
 struct TextureSet {
   SDL_Texture *birdTex1, *birdTex2, *cloudTex;
-};
-
-struct BirdContext {
-  float width;
-  float height;
-  float x_loc;
-  float y_loc;
-  int boopFrames;
-  SDL_Texture *curTexture;
 };
 
 struct MouseContext {

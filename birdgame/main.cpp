@@ -1,3 +1,5 @@
+#include "SDL3/SDL_init.h"
+#include "bird.h"
 #include "textures.h"
 #include "utils.h"
 #define SDL_MAIN_USE_CALLBACKS 1 /* use the callbacks instead of main() */
@@ -10,9 +12,6 @@
 
 #define WINDOW_START_WIDTH 120.0f
 #define WINDOW_START_HEIGHT 120.0f
-
-#define BOOP_FRAMES 2
-#define MAX_BOOP_FRAMES 10
 
 /////////////////////////////////////////////////////////////////////////////
 /// Initialization & Shutdown
@@ -69,15 +68,8 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
       .renderer = renderer,
       .textureSet = nullptr,
       .audioDevice = audioDevice,
-      .bird = std::make_unique<BirdContext>(BirdContext{
-          .width = -1,  // To be set later in init
-          .height = -1, // To be set later in init
-          .x_loc = (float)bbwidth / 2.0f,
-          .y_loc = (float)bbheight / 2.0f,
-          .boopFrames = 0,
-          .curTexture = nullptr, // To be set later in init
-
-      }),
+      .bird = std::make_unique<BirdContext>(
+          BirdContext((float)bbwidth / 2.0f, (float)bbheight / 2.0f)),
       .fps = 0, // Set every 10 frames
       .prevTickCount = SDL_GetTicks(),
       .mouseContext = std::make_unique<MouseContext>(MouseContext{
@@ -94,11 +86,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
   }
 
   // Set default bird texture
-  app->bird->curTexture = app->textureSet->birdTex2;
-
-  // Set bird width and height
-  SDL_GetTextureSize(app->bird->curTexture, &app->bird->width,
-                     &app->bird->height);
+  app->bird->SetCurTexture(app->textureSet->birdTex2);
 
   SDL_SetRenderVSync(renderer, -1);                          // enable vysnc
   SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND); // enable blending
@@ -137,9 +125,9 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
       app->mouseContext->win_x -= (float)global_win_x;
       app->mouseContext->win_y -= (float)global_win_y;
 
-      app->bird->boopFrames += BOOP_FRAMES;
-      if (app->bird->boopFrames < MAX_BOOP_FRAMES) {
-        app->bird->boopFrames = MAX_BOOP_FRAMES;
+      SDL_AppResult boopResult = app->bird->BoopBird();
+      if (boopResult != SDL_APP_CONTINUE) {
+        return boopResult;
       }
     }
   }
@@ -168,6 +156,9 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
   SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 0);
   SDL_RenderClear(app->renderer); // Clear renderer before displaying textures
 
+  SDL_AppResult birdIterateResult = app->bird->BirdIterate();
+  if (birdIterateResult != SDL_APP_CONTINUE)
+    return birdIterateResult;
   RenderBird(app);
 
   SDL_RenderPresent(app->renderer);
@@ -180,11 +171,6 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
   // Move window if mouse is down
   if (app->mouseContext->isHeld) {
     MoveAppWindowCenterToMouse(app);
-  }
-
-  // Tick boop frames
-  if (app->bird->boopFrames > 0) {
-    app->bird->boopFrames--;
   }
 
   // Log framerate
