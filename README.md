@@ -1,5 +1,3 @@
-CMakeList scripts based on https://github.com/sun1211/cmake_with_add_subdirectory and https://github.com/NagyD/SDLPoP
-
 # Prerequisites
 ---
 `cmake`,`SDL3`, `SDL3_image`, `SDL3_ttf`
@@ -35,3 +33,9 @@ For Unix based systems:
 ```
 For Windows:
 TODO 
+
+# References and Attributions
+---
+CMakeList scripts based on https://github.com/sun1211/cmake_with_add_subdirectory and https://github.com/NagyD/SDLPoP.
+Visuals made using `Aseprite`.
+Sounds made using `Bosca Ceoil: The Blue Album`.

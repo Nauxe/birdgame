@@ -1,6 +1,8 @@
-#include "bird.h"
-#include "textures.h"
-#include "utils.h"
+#include "bird/bird.h"
+#include "sounds/sounds.h"
+#include "textures/textures.h"
+#include "utils/utils.h"
+#include <memory>
 #define SDL_MAIN_USE_CALLBACKS 1 /* use the callbacks instead of main() */
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
@@ -43,7 +45,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
     return SDL_Fail();
   }
 
-  // init SDL Mixer
+  // init SDL Device
   auto audioDevice =
       SDL_OpenAudioDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, NULL);
   if (not audioDevice) {
@@ -60,12 +62,14 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
   if (width != bbwidth) {
     SDL_Log("This is a highdpi environment.");
   }
+
   // set up the application data
   *appstate = new AppContext{
       .frameNumber = 0,
       .window = window,
       .renderer = renderer,
       .textureSet = nullptr,
+      .soundPack = nullptr,
       .audioDevice = audioDevice,
       .bird = std::make_unique<BirdContext>(
           BirdContext((float)bbwidth / 2.0f, (float)bbheight / 2.0f)),
@@ -88,6 +92,15 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
   app->bird->InitalizeBirdTextures(
       app->textureSet->birdTex2,  // Idle texture
       app->textureSet->birdTex1); // Foot up texture
+
+  // Load in sounds
+  app->soundPack = std::make_unique<SoundPack>(SoundPack{
+      .birdBoop = Sound{},
+  });
+  if (!InitSound(app->audioDevice, "../../assets/birdBooped.wav",
+                 &app->soundPack->birdBoop)) {
+    return SDL_APP_FAILURE;
+  }
 
   SDL_SetRenderVSync(renderer, -1);                          // enable vysnc
   SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND); // enable blending
@@ -130,6 +143,8 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
       if (boopResult != SDL_APP_CONTINUE) {
         return boopResult;
       }
+
+      PlaySound(&app->soundPack->birdBoop);
     }
   }
 

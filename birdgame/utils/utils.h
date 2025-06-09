@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../bird/bird.h"
-#include "SDL3/SDL_init.h"
+#include "../sounds/sounds.h"
 #include <SDL3/SDL.h>
 #include <memory>
 
@@ -24,6 +24,7 @@ struct AppContext {
   SDL_Window *window;
   SDL_Renderer *renderer;
   std::unique_ptr<TextureSet> textureSet;
+  std::unique_ptr<SoundPack> soundPack;
   SDL_AudioDeviceID audioDevice;
   SDL_AppResult app_quit = SDL_APP_CONTINUE;
   std::unique_ptr<BirdContext> bird;
