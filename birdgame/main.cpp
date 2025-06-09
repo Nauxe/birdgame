@@ -68,7 +68,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
       .frameNumber = 0,
       .window = window,
       .renderer = renderer,
-      .textureSet = nullptr,
+      .textureSet = std::make_unique<TextureSet>(TextureSet{}),
       .soundPack = nullptr,
       .audioDevice = audioDevice,
       .bird = std::make_unique<BirdContext>(
@@ -83,7 +83,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
   };
   auto *app = (AppContext *)*appstate;
 
-  SDL_AppResult loadTexResult = LoadTextures(&app);
+  SDL_AppResult loadTexResult = LoadTextures(app->renderer, app->textureSet);
   if (loadTexResult != SDL_APP_CONTINUE) {
     return SDL_Fail();
   }
