@@ -69,7 +69,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
       .window = window,
       .renderer = renderer,
       .textureSet = std::make_unique<TextureSet>(TextureSet{}),
-      .soundPack = nullptr,
+      .soundPack = std::make_unique<SoundPack>(SoundPack{}),
       .audioDevice = audioDevice,
       .bird = std::make_unique<BirdContext>(
           BirdContext((float)bbwidth / 2.0f, (float)bbheight / 2.0f)),
@@ -83,8 +83,8 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
   };
   auto *app = (AppContext *)*appstate;
 
-  SDL_AppResult loadTexResult = LoadTextures(app->renderer, app->textureSet);
-  if (loadTexResult != SDL_APP_CONTINUE) {
+  bool loadTexResult = LoadTextureSet(app->renderer, app->textureSet);
+  if (loadTexResult != true) {
     return SDL_Fail();
   }
 
@@ -94,12 +94,9 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
       app->textureSet->birdTex1); // Foot up texture
 
   // Load in sounds
-  app->soundPack = std::make_unique<SoundPack>(SoundPack{
-      .birdBoop = Sound{},
-  });
-  if (!InitSound(app->audioDevice, "../../assets/birdBooped.wav",
-                 &app->soundPack->birdBoop)) {
-    return SDL_APP_FAILURE;
+  bool loadSoundResult = LoadSoundPack(app->audioDevice, app->soundPack);
+  if (loadSoundResult != true) {
+    return SDL_Fail();
   }
 
   SDL_SetRenderVSync(renderer, -1);                          // enable vysnc
@@ -139,12 +136,9 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
       app->mouseContext->win_x -= (float)global_win_x;
       app->mouseContext->win_y -= (float)global_win_y;
 
-      SDL_AppResult boopResult = app->bird->BoopBird();
-      if (boopResult != SDL_APP_CONTINUE) {
-        return boopResult;
-      }
+      bool isBooped = app->bird->BoopBird();
 
-      PlaySound(&app->soundPack->birdBoop);
+      bool isSoundPlayed = PlaySound(&app->soundPack->birdBoop);
     }
   }
 
@@ -172,9 +166,9 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
   SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 0);
   SDL_RenderClear(app->renderer); // Clear renderer before displaying textures
 
-  SDL_AppResult birdIterateResult = app->bird->BirdIterate();
-  if (birdIterateResult != SDL_APP_CONTINUE)
-    return birdIterateResult;
+  bool birdIterateResult = app->bird->BirdIterate();
+  if (birdIterateResult != true)
+    return SDL_Fail();
   RenderBird(app);
 
   SDL_RenderPresent(app->renderer);

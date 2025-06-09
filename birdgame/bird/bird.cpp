@@ -9,20 +9,21 @@ BirdContext::BirdContext(float x_loc, float y_loc) {
   this->curTexture = nullptr; // To be set when textures are set
 }
 
-SDL_AppResult BirdContext::BoopBird() {
+bool BirdContext::BoopBird() {
   if (this->boopFrames < 0) {
     this->boopFrames = BOOP_FRAMES;
-    this->SetCurTexture(this->birdTextureSet->birdTexFootUp);
+    return this->SetCurTexture(this->birdTextureSet->birdTexFootUp);
   } else {
     this->boopFrames += BOOP_FRAMES;
-    if (this->boopFrames > MAX_BOOP_FRAMES)
+    if (this->boopFrames > MAX_BOOP_FRAMES) {
       this->boopFrames = MAX_BOOP_FRAMES;
+      return false;
+    }
+    return true;
   }
-
-  return SDL_APP_CONTINUE;
 }
 
-SDL_AppResult BirdContext::BirdIterate() {
+bool BirdContext::BirdIterate() {
   if (this->boopFrames > 0) {
     this->width =
         this->texture_width * (1.0f + this->boopFrames * BOOP_SIZE_MULT);
@@ -38,33 +39,33 @@ SDL_AppResult BirdContext::BirdIterate() {
   } else if (this->boopFrames > BOOP_FRAMES - BOOP_ANIM_FRAMES) {
     this->boopFrames -= 1;
   } else {
-    this->SetCurTexture(this->birdTextureSet->birdTexIdle);
+    return this->SetCurTexture(this->birdTextureSet->birdTexIdle);
   }
 
-  return SDL_APP_CONTINUE;
+  return true;
 }
 
-SDL_AppResult BirdContext::SetCurTexture(SDL_Texture *texture) {
+bool BirdContext::SetCurTexture(SDL_Texture *texture) {
   // Set bird texture
   this->curTexture = texture;
 
   // Set bird width and height
-  SDL_GetTextureSize(this->curTexture, &this->texture_width,
-                     &this->texture_height);
+  if (!SDL_GetTextureSize(this->curTexture, &this->texture_width,
+                          &this->texture_height)) {
+    return false;
+  };
   this->width = this->texture_width;
   this->height = this->texture_height;
 
-  return SDL_APP_CONTINUE;
+  return true;
 }
 
-SDL_AppResult BirdContext::InitalizeBirdTextures(SDL_Texture *birdTexIdle,
-                                                 SDL_Texture *birdTexFootUp) {
+bool BirdContext::InitalizeBirdTextures(SDL_Texture *birdTexIdle,
+                                        SDL_Texture *birdTexFootUp) {
   this->birdTextureSet = std::make_unique<BirdTextureSet>(BirdTextureSet{
       .birdTexIdle = birdTexIdle,
       .birdTexFootUp = birdTexFootUp,
   });
 
-  this->SetCurTexture(this->birdTextureSet->birdTexIdle);
-
-  return SDL_APP_CONTINUE;
+  return this->SetCurTexture(this->birdTextureSet->birdTexIdle);
 }

@@ -1,6 +1,14 @@
 #include "sounds.h"
+#include <string>
 
-bool InitSound(SDL_AudioDeviceID audioDevice, const char *fname, Sound *sound) {
+static std::string ASSETS_PATH =
+    "../../assets/"; // Loading sounds uses the path from which the executable
+                     // is located.
+                     // Note: Loading images uses the path from the
+                     // location in which the executable is run from.
+
+bool LoadSoundFromPath(SDL_AudioDeviceID audioDevice, Sound *sound,
+                       const char *fname) {
   bool retval = false;
   SDL_AudioSpec spec;
   char *wav_path = NULL;
@@ -36,4 +44,10 @@ bool PlaySound(Sound *sound) {
   return SDL_ClearAudioStream(sound->stream) &&
          SDL_PutAudioStreamData(sound->stream, sound->wav_data,
                                 (int)sound->wav_data_len);
+}
+
+bool LoadSoundPack(SDL_AudioDeviceID audioDevice,
+                   std::unique_ptr<SoundPack> &soundPack) {
+  return LoadSoundFromPath(audioDevice, &soundPack->birdBoop,
+                           (ASSETS_PATH + "birdBooped.wav").c_str());
 }

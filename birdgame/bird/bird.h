@@ -20,7 +20,7 @@ private:
   SDL_Texture *curTexture;
   std::unique_ptr<BirdTextureSet> birdTextureSet;
 
-  SDL_AppResult SetCurTexture(SDL_Texture *texture);
+  bool SetCurTexture(SDL_Texture *texture);
 
 public:
   BirdContext(float x_loc, float y_loc);
@@ -32,10 +32,10 @@ public:
 
   inline SDL_Texture *GetCurTexture();
 
-  SDL_AppResult InitalizeBirdTextures(SDL_Texture *birdTexIdle,
-                                      SDL_Texture *birdTexFootUp);
-  SDL_AppResult BoopBird();
-  SDL_AppResult BirdIterate();
+  bool InitalizeBirdTextures(SDL_Texture *birdTexIdle,
+                             SDL_Texture *birdTexFootUp);
+  bool BoopBird();
+  bool BirdIterate();
 };
 
 inline SDL_Texture *BirdContext::GetCurTexture() { return this->curTexture; }
