@@ -31,9 +31,28 @@ jobs:
         with:
           audit_token: ${{ secrets.MY_CONAN_AUDIT_TOKEN }}
           cache_packages: true
+
+      - name: Install Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libegl1-mesa-dev \
+            libgl1-mesa-dev \
+            libwayland-dev \
+            wayland-protocols \
+            libx11-dev \
+            libxext-dev \
+            libxrandr-dev \
+            libxinerama-dev \
+            libxcursor-dev \
+            libxi-dev \
+            libxfixes-dev \
+            libxkbcommon-dev \
+            libudev-dev
     
-      - name: Install Conan dependencies
-        run: conan install . --build=missing -c tools.system.package_manager:mode=install
+      - name: Install Conan dependencies with lockfile
+        run: conan install . --lockfile=conan.lock --lockfile-partial --lockfile-out=conan.lock --build=missing
 
       - name: Configure build
         run: cmake --preset conan-release
