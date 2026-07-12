@@ -1,0 +1,31 @@
+name: Compile
+
+on: push
+
+jobs:
+  Conan-Setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.13'
+      
+      - name: Checkout code
+        uses: actions/checkout@v4
+    
+      - name: Clear PKG_CONFIG_PATH
+        shell: bash
+        run: echo "PKG_CONFIG_PATH=" >> $GITHUB_ENV
+    
+      - name: Install Conan
+        uses: conan-io/setup-conan@v1
+    
+      - name: Install Conan dependencies
+        run: conan install . --build=missing
+
+      - name: Configure build
+        run: cmake --preset conan-release
+
+      - name: Compile
+        run: cmake --build --preset conan-release
