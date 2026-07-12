@@ -52,7 +52,7 @@ jobs:
             libudev-dev
     
       - name: Install Conan dependencies with lockfile
-        run: conan install . --lockfile=conan.lock --lockfile-partial --lockfile-out=conan.lock --build=missing
+        run: conan install . --lockfile=conan.lock --lockfile-partial --lockfile-out=conan.lock --build=missing -c tools.system.package_manager:mode=install
 
       - name: Configure build
         run: cmake --preset conan-release
