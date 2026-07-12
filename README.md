@@ -1,30 +1,19 @@
 # Prerequisites
 ---
-`cmake`,`SDL3`, `SDL3_image`, `SDL3_ttf`
+`cmake`, `conan`
 
-## Windows
-Make sure to install the MinGW Development Libraries of SDL3 at: (The `*-mingw.tar.gz` files)
-- https://github.com/libsdl-org/SDL/releases/latest
-- https://github.com/libsdl-org/SDL_image/releases/latest
-- https://github.com/libsdl-org/SDL_ttf/releases/latest
-
-Follow the instructions from INSTALL.md in the files downloaded.
-
-
-## Unix based
-TODO 
-
+The libraries `SDL3`, `SDL3_image`, `SDL3_ttf` are installed via `conan`.
 
 # To build and run: (Navigate into the cloned directory first)
 ---
-### 1. Configure build. 
-* Set appropriate paths for SDL3 by appending `-DSDL3="[/path/to/SDL3]" -DSDL3_image="[/path/to/SDL3_image]" -DSDL3_ttf="[/path/to/SDL3_ttf]"` to below or modifying `CMakeLists.txt` in the root directory.
+### 1. Configure build and install dependencies. 
 ```bash
-cmake -S . -B build
+conan install
+cmake --preset conan-release # Requires cmake>=3.23
 ```
 ### 2. Compile
 ```bash
-cmake --build build
+cmake --build --preset conan-release 
 ```
 ### 3. Run executable
 For Unix based systems:
@@ -36,6 +25,5 @@ TODO
 
 # References and Attributions
 ---
-CMakeList scripts based on https://github.com/sun1211/cmake_with_add_subdirectory and https://github.com/NagyD/SDLPoP.
 Visuals made using `Aseprite`.
 Sounds made using `Bosca Ceoil: The Blue Album`.
