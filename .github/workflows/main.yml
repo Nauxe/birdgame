@@ -1,10 +1,18 @@
 name: Compile
 
-on: push
+on: 
+  push:
+    branches:
+        - main
 
 jobs:
-  Conan-Setup:
-    runs-on: ubuntu-latest
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
+    
     steps:
       - name: Install Python
         uses: actions/setup-python@v4
@@ -20,9 +28,12 @@ jobs:
     
       - name: Install Conan
         uses: conan-io/setup-conan@v1
+        with:
+          audit_token: ${{ secrets.MY_CONAN_AUDIT_TOKEN }}
+          cache_packages: true
     
       - name: Install Conan dependencies
-        run: conan install . --build=missing
+        run: conan install . --build=missing -c tools.system.package_manager:mode=install
 
       - name: Configure build
         run: cmake --preset conan-release
