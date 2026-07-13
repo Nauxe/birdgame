@@ -32,12 +32,19 @@ jobs:
           audit_token: ${{ secrets.MY_CONAN_AUDIT_TOKEN }}
           cache_packages: true
 
-      - name: Install SDL dependencies
+      - name: Install Linux dependencies
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libsdl3-dev      
-
+          sudo apt-get install -y \
+            xorg-dev \ 
+            libegl1-mesa-dev \
+            libgl1-mesa-dev \
+            libwayland-dev \
+            wayland-protocols \
+            libxkbcommon-dev \
+            libudev-dev
+    
       - name: Install Conan dependencies with lockfile
         run: conan install . --lockfile=conan.lock --lockfile-partial --lockfile-out=conan.lock --build=missing -c tools.system.package_manager:mode=install
 
