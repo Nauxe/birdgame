@@ -44,16 +44,28 @@ jobs:
             wayland-protocols \
             libxkbcommon-dev \
             libudev-dev \
-            libx11-dev \
-            libx11-xcb-dev \
-            libfontenc-dev \
-            libice-dev \
-            libsm-dev \
-            libxau-dev \
-            libxaw7-dev
-    
+            libxcb-glx0-dev \
+            libxcb-render0-dev \
+            libxcb-render-util0-dev \
+            libxcb-xkb-dev \
+            libxcb-icccm4-dev \
+            libxcb-image0-dev \
+            libxcb-keysyms1-dev \
+            libxcb-randr0-dev \
+            libxcb-shape0-dev \
+            libxcb-sync-dev \
+            libxcb-xfixes0-dev \
+            libxcb-xinerama0-dev \
+            libxcb-dri3-dev \
+            libxcb-cursor-dev \
+            libxcb-dri2-0-dev \
+            libxcb-present-dev \
+            libxcb-composite0-dev \
+            libxcb-ewmh-dev \
+            libxcb-res0-dev
+        
       - name: Install Conan dependencies with lockfile
-        run: conan install . --lockfile=conan.lock --lockfile-partial --lockfile-out=conan.lock --build=missing -c tools.system.package_manager:mode=install
+        run: conan install . --lockfile=conan.lock --lockfile-partial --lockfile-out=conan.lock --build=missing
 
       - name: Configure build
         run: cmake --preset conan-release
