@@ -46,7 +46,7 @@ jobs:
             libudev-dev \
             libx11-dev \
             libx11-xcb-dev \
-            libfrontenc-dev \
+            libfontenc-dev \
             libice-dev \
             libsm-dev \
             libxau-dev \
