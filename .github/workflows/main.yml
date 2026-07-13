@@ -69,8 +69,18 @@ jobs:
       - name: Install Conan dependencies with lockfile
         run: conan install . --lockfile=conan.lock --lockfile-partial --lockfile-out=conan.lock --build=missing
 
-      - name: Configure build
+      - name: Configure build (Windows)
+        if: runner.os == 'Windows'
+        run: cmake --preset conan-default
+
+      - name: Build (Windows)
+        if: runner.os == 'Windows'
+        run: cmake --build --preset conan-release
+
+      - name: Configure build (Linux/macOS)
+        if: runner.os != 'Windows'
         run: cmake --preset conan-release
 
-      - name: Compile
+      - name: Build (Linux/macOS)
+        if: runner.os != 'Windows'
         run: cmake --build --preset conan-release
