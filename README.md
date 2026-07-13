@@ -8,7 +8,7 @@ The libraries `SDL3`, `SDL3_image`, `SDL3_ttf` are installed via `conan`.
 ---
 ### 1. Configure build and install dependencies. 
 ```bash
-conan install
+conan install . --build=missing
 cmake --preset conan-release # Requires cmake>=3.23
 ```
 ### 2. Compile
