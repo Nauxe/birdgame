@@ -44,6 +44,7 @@ jobs:
             wayland-protocols \
             libxkbcommon-dev \
             libudev-dev \
+            libx11-xcb-dev \
             libxcb-glx0-dev \
             libxcb-render0-dev \
             libxcb-render-util0-dev \
