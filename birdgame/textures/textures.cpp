@@ -15,12 +15,12 @@ static std::string ASSETS_PATH =
 bool LoadTextureFromPath(SDL_Renderer *renderer, SDL_Texture **texture,
                          const char *path) {
   SDL_Surface *surface = IMG_Load(path);
-  if (not surface) {
+  if (!surface) {
     return false;
   }
 
   *texture = SDL_CreateTextureFromSurface(renderer, surface);
-  if (not *texture) {
+  if (!*texture) {
     SDL_DestroySurface(surface);
     return false;
   }
@@ -68,7 +68,7 @@ bool LoadTextureSet(SDL_Renderer *renderer,
   LoadTextureFromPath(renderer, &birdTex2, (ASSETS_PATH + "bird2.png").c_str());
   LoadTextureFromPath(renderer, &cloudTex, (ASSETS_PATH + "cloud.png").c_str());
 
-  if (not birdTex1 || not birdTex2 || not cloudTex) {
+  if (!birdTex1 || !birdTex2 || !cloudTex) {
     return false;
   }
 

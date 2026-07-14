@@ -23,12 +23,12 @@
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
   // init the library, here we make a window so we only need the Video
   // capabilities.
-  if (not SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
+  if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
     return SDL_Fail();
   }
 
   // init TTF
-  if (not TTF_Init()) {
+  if (!TTF_Init()) {
     return SDL_Fail();
   }
 
@@ -37,20 +37,20 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
       SDL_CreateWindow("birdgame", WINDOW_START_WIDTH, WINDOW_START_HEIGHT,
                        SDL_WINDOW_HIGH_PIXEL_DENSITY | SDL_WINDOW_BORDERLESS |
                            SDL_WINDOW_TRANSPARENT | SDL_WINDOW_ALWAYS_ON_TOP);
-  if (not window) {
+  if (!window) {
     return SDL_Fail();
   }
 
   // create a renderer
   SDL_Renderer *renderer = SDL_CreateRenderer(window, NULL);
-  if (not renderer) {
+  if (!renderer) {
     return SDL_Fail();
   }
 
   // init SDL Device
   auto audioDevice =
       SDL_OpenAudioDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, NULL);
-  if (not audioDevice) {
+  if (!audioDevice) {
     return SDL_Fail();
   }
 
