@@ -93,6 +93,6 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: build/bin/*
-          asset_name: birdgame
+          asset_name: birdgame_${{ matrix.artifact_name }}
           tag: ${{ github.ref }}
           file_glob: true
