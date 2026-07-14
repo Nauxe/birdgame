@@ -17,7 +17,7 @@ jobs:
             artifact_name: birdgame
             asset_name: birdgame-ubuntu
           - os: windows-latest
-            artifact_name: birdgame.exe
+            artifact_name: Release/birdgame.exe
             asset_name: birdgame-windows
           - os: macos-latest
             artifact_name: birdgame 
@@ -87,7 +87,7 @@ jobs:
 
       - name: Build (Windows)
         if: runner.os == 'Windows'
-        run: cmake --build --preset conan-default
+        run: cmake --build --preset conan-release
 
       - name: Configure build (Linux/macOS)
         if: runner.os != 'Windows'
