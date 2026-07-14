@@ -14,10 +14,13 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
+            artifact_name: birdgame
             asset_name: birdgame-ubuntu
           - os: windows-latest
+            artifact_name: birdgame.exe
             asset_name: birdgame-windows
           - os: macos-latest
+            artifact_name: birdgame 
             asset_name: birdgame-macos
 
     runs-on: ${{ matrix.os }}
@@ -98,9 +101,9 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/bin/*
+          file: build/bin/${{ matrix.artifact_name }}
           asset_name: birdgame_${{ matrix.asset_name }}
           tag: ${{ github.ref }}
-          file_glob: true
+          file_glob: false
           overwrite: true
           body: "To run, download assets via source code and executable. Place executable in `/birdgame-main/build/bin` and run the executable while in `/birdgame-main` directory."
