@@ -1,9 +1,12 @@
-name: Compile
+name: Compile and Publish Binaries
 
 on: 
   push:
     branches:
         - main
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -84,3 +87,12 @@ jobs:
       - name: Build (Linux/macOS)
         if: runner.os != 'Windows'
         run: cmake --build --preset conan-release
+
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: *
+          asset_name: birdgame
+          tag: ${{ github.ref }}
+          file_glob: true
