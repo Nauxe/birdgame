@@ -18,7 +18,7 @@ jobs:
             asset_name: birdgame-ubuntu
           - os: windows-latest
             artifact_name: Release/birdgame.exe
-            asset_name: birdgame-windows
+            asset_name: birdgame-windows.exe
           - os: macos-latest
             artifact_name: birdgame 
             asset_name: birdgame-macos
@@ -102,7 +102,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: build/bin/${{ matrix.artifact_name }}
-          asset_name: birdgame_${{ matrix.asset_name }}
+          asset_name: ${{ matrix.asset_name }}
           tag: ${{ github.ref }}
           file_glob: false
           overwrite: true
