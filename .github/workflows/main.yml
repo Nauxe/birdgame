@@ -87,7 +87,7 @@ jobs:
 
       - name: Build (Windows)
         if: runner.os == 'Windows'
-        run: cmake --build --preset conan-release
+        run: cmake --build --preset conan-default
 
       - name: Configure build (Linux/macOS)
         if: runner.os != 'Windows'
