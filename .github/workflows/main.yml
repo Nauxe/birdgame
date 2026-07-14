@@ -106,3 +106,4 @@ jobs:
           tag: ${{ github.ref }}
           file_glob: true
           overwrite: true
+          body: "To run, download assets via source code and executable. Place executable in `/birdgame-main/build/bin` and run the executable while in `/birdgame-main` directory."
