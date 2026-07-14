@@ -20,7 +20,8 @@ bool LoadTextureFromPath(SDL_Renderer *renderer, SDL_Texture **texture,
   }
 
   *texture = SDL_CreateTextureFromSurface(renderer, surface);
-  if (not texture) {
+  if (not *texture) {
+    SDL_DestroySurface(surface);
     return false;
   }
 

@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.30)
 project(birdgame)
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 # Make sure that SDL3 packages are available
 find_package(SDL3 REQUIRED) # Find the SDL3 package
 find_package(SDL3_image REQUIRED) # Find the SDL3_image package
